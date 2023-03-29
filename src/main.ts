@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  await app.listen(process.env.DEVELOP_PORT);
   
 }
 
@@ -18,12 +18,12 @@ bootstrap();
   // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCLcJUJPElsMR51X400cgecbK7e0Law8fY",
+  apiKey: process.env.API_KEY,
   authDomain: "swiftnius.firebaseapp.com",
   projectId: "swiftnius",
   storageBucket: "swiftnius.appspot.com",
   messagingSenderId: "806431389932",
-  appId: "1:806431389932:web:486c2d7c48f570cfdc0dc9",
+  appId: process.env.APP_ID,
   measurementId: "G-EK0L81VJ6Z"
 };
 
