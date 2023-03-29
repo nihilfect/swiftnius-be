@@ -4,13 +4,16 @@ import { handleHttpError } from 'src/error.handler';
 import { authInstance } from 'src/main';
 import { LoginRequest } from 'src/models/login-request.model';
 import { User } from 'src/models/user.model';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
+    constructor(private authRepository: AuthRepository) {}
+
     async signup(signupDto: LoginRequest) {
        return createUserWithEmailAndPassword(authInstance, signupDto.email, signupDto.password)
        .then(async (userCreds: UserCredential) => { 
-         return await this.createUser({uid: userCreds.user.uid, email: signupDto.email});
+         return await this.authRepository.createUser({uid: userCreds.user.uid, email: signupDto.email});
        })
        .catch(handleHttpError);
        
@@ -19,16 +22,10 @@ export class AuthService {
     async login(loginDto: LoginRequest) {
         return signInWithEmailAndPassword(authInstance, loginDto.email, loginDto.password)
        .then(async (userCreds: UserCredential) => { 
-         return await this.getUser({uid: userCreds.user.uid, email: loginDto.email});
+         return await this.authRepository.getUser({uid: userCreds.user.uid, email: loginDto.email});
        })
        .catch(handleHttpError);
     }
 
-    async createUser(user: User) {
-        return "createUser()";
-    }
-
-    async getUser(user: User) {
-        return "getUser()"
-    }
+  
 }
