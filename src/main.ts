@@ -1,13 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase-admin/firestore';
 import { AppModule } from './app.module';
+import { credential, ServiceAccount } from 'firebase-admin';
+import serviceAccount from '../serviceAccountKey.json';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(process.env.DEVELOP_PORT);
-  
 }
 
 bootstrap();
@@ -24,7 +24,9 @@ const firebaseConfig = {
   storageBucket: "swiftnius.appspot.com",
   messagingSenderId: "806431389932",
   appId: process.env.APP_ID,
-  measurementId: "G-EK0L81VJ6Z"
+  measurementId: "G-EK0L81VJ6Z",
+  databaseURL: 'https://swiftnius.firebaseio.com',
+  credential: credential.cert(serviceAccount as ServiceAccount),
 };
 
 // Initialize Firebase
