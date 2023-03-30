@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { initializeApp } from "firebase/app";
+import * as admin from 'firebase-admin';
 import { getAuth } from 'firebase/auth';
 import { AppModule } from './app.module';
 import { credential, ServiceAccount } from 'firebase-admin';
@@ -33,6 +34,9 @@ const firebaseConfig = {
 // Initialize Firebase
 
     const app = initializeApp(firebaseConfig);
+    admin.initializeApp({
+      credential: credential.cert(serviceAccount as ServiceAccount),
+    });
     const authInstance = getAuth(app);
    const firestoreInstance = getFirestore(app);
 

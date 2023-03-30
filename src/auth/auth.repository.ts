@@ -2,7 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CollectionReference } from "firebase-admin/firestore";
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestoreInstance } from "src/main";
-import { User } from "src/models/user.model";
+import { User } from "src/auth/models/user.model";
+import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 
 @Injectable()
 export class AuthRepository {
@@ -15,10 +16,9 @@ export class AuthRepository {
         return (await docRef.get()).data();
     }
 
-    async getUser(user: User) {
-        const q = query(collection(firestoreInstance, User.collectionName), where("uid", "==", user.uid));
+    async getUser(userId: string): Promise<User> {
+        const q = query(collection(firestoreInstance, User.collectionName), where("uid", "==", userId));
         const querySnapshot = await getDocs(q);
-        if(!querySnapshot.empty) return querySnapshot.docs[0].data();
-        return {};
+        return querySnapshot.docs[0].data() as User;
     }
 }
