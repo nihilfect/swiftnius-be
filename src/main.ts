@@ -1,11 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { initializeApp } from "firebase/app";
 import * as admin from 'firebase-admin';
-import { getAuth } from 'firebase/auth';
 import { AppModule } from './app.module';
 import { credential, ServiceAccount } from 'firebase-admin';
 import serviceAccount from '../serviceAccountKey.json';
-import { getFirestore } from 'firebase/firestore';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,13 +31,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 
-    const app = initializeApp(firebaseConfig);
-    admin.initializeApp({
+    initializeApp(firebaseConfig);
+    const app = admin.initializeApp({
       credential: credential.cert(serviceAccount as ServiceAccount),
     });
-    const authInstance = getAuth(app);
-   const firestoreInstance = getFirestore(app);
 
-export { app, authInstance, firestoreInstance }
+export { app } 
 
 
