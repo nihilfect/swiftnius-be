@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential, AuthError } from "firebase/auth";
+import { Injectable } from '@nestjs/common';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { handleHttpError } from 'src/shared/error.handler';
 import { authInstance } from 'src/main';
 import { LoginRequest } from 'src/auth/models/login-request.model';
-import { User } from 'src/auth/models/user.model';
 import { AuthRepository } from './auth.repository';
 
 import { getAuth } from 'firebase-admin/auth';

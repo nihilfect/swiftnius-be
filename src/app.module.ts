@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FirestoreModule } from './firestore/firestore.module';
+import { NiusModule } from './nius/nius.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -14,7 +15,8 @@ import { FirestoreModule } from './firestore/firestore.module';
       }),
       inject: [ConfigService],
     }),
-    AuthModule
+    AuthModule,
+    NiusModule
     ],
   controllers: [AppController],
   providers: [AppService],
