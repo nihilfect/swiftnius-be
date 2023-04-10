@@ -7,6 +7,18 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { ValidationPipe } from '@nestjs/common';
 import { getAuth } from 'firebase-admin/auth';
 
+// Initialize Firebase Admin
+
+const app = initializeApp({
+  credential: credential.cert(serviceAccount as ServiceAccount),
+  databaseURL: 'https://swiftnius.firebaseio.com'
+});
+
+const firestore = getFirestore(app);
+const auth = getAuth(app);
+
+export { app, auth, firestore } 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
@@ -14,20 +26,10 @@ async function bootstrap() {
   await app.listen(process.env.DEVELOP_PORT);
 }
 
-bootstrap();
-
-// Initialize Firebase Admin
-
-    const app = initializeApp({
-      credential: credential.cert(serviceAccount as ServiceAccount),
-      databaseURL: 'https://swiftnius.firebaseio.com'
-    });
-
-    const firestore = getFirestore(app);
-    const auth = getAuth(app);
-    
+setTimeout(() => {
+  bootstrap();
+}, 3000);
 
 
-export { app, auth, firestore } 
 
 
