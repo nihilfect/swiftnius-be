@@ -1,20 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { handleHttpError } from 'src/shared/error.handler';
 import { LoginRequest } from 'src/auth/models/login-request.model';
 import { AuthRepository } from './auth.repository';
-
-import { getAuth } from 'firebase/auth';
-
-import * as adminAuth from 'firebase-admin/auth';
 
 @Injectable()
 export class AuthService {
   constructor(private authRepository: AuthRepository) { }
 
-  authInstance: Auth = getAuth();
-
-  async signup(signupDto: LoginRequest) {
+  /* async oldSignup(signupDto: LoginRequest) {
     return createUserWithEmailAndPassword(this.authInstance, signupDto.email, signupDto.password)
       .then(async (userCreds: UserCredential) => {
         let accessToken = await userCreds.user.getIdToken();
@@ -26,10 +19,16 @@ export class AuthService {
       })
       .catch(handleHttpError);
 
+  } */
+
+  async signup(signupDto: LoginRequest) {
+    return this.authRepository.createUser({ username: signupDto.email.substring(0, signupDto.email.indexOf("@")), email: signupDto.email, creation_timestamp: new Date().getTime() })
+    .then((r) => r)
+    .catch(handleHttpError);
   }
 
-  async login(loginDto: LoginRequest) {
-    return signInWithEmailAndPassword(this.authInstance, loginDto.email, loginDto.password)
+  /* async oldLogin(loginDto: LoginRequest) {
+    return signInWit hEmailAndPassword(this.authInstance, loginDto.email, loginDto.password)
       .then(async (userCreds: UserCredential) => {
         let accessToken = await userCreds.user.getIdToken();
         let user = await this.authRepository.getUser(userCreds.user.uid);
@@ -39,12 +38,12 @@ export class AuthService {
         }
       })
       .catch(handleHttpError);
-  }
+  } */
 
-  async generateCustomToken(uid: string) {
-    return adminAuth.getAuth()
-      .createCustomToken(uid)
-      .then((customToken) => customToken);
+  async login(loginDto: LoginRequest) {
+    return this.authRepository.getUser(loginDto.email)
+    .then((r) => r)
+    .catch(handleHttpError);;
   }
 
 }

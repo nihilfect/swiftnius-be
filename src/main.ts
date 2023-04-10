@@ -1,41 +1,33 @@
 import { NestFactory } from '@nestjs/core';
-import { initializeApp } from "firebase/app";
-import * as admin from 'firebase-admin';
+import { initializeApp } from "firebase-admin/app";
 import { AppModule } from './app.module';
 import { credential, ServiceAccount } from 'firebase-admin';
 import serviceAccount from '../serviceAccountKey.json';
+import { getFirestore } from 'firebase-admin/firestore';
+import { ValidationPipe } from '@nestjs/common';
+import { getAuth } from 'firebase-admin/auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.DEVELOP_PORT);
 }
 
 bootstrap();
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// Initialize Firebase Admin
 
-  // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: "swiftnius.firebaseapp.com",
-  projectId: "swiftnius",
-  storageBucket: "swiftnius.appspot.com",
-  messagingSenderId: "806431389932",
-  appId: process.env.APP_ID,
-  measurementId: "G-EK0L81VJ6Z",
-  databaseURL: 'https://swiftnius.firebaseio.com',
-  credential: credential.cert(serviceAccount as ServiceAccount),
-};
-
-// Initialize Firebase
-
-    initializeApp(firebaseConfig);
-    const app = admin.initializeApp({
+    const app = initializeApp({
       credential: credential.cert(serviceAccount as ServiceAccount),
+      databaseURL: 'https://swiftnius.firebaseio.com'
     });
 
-export { app } 
+    const firestore = getFirestore(app);
+    const auth = getAuth(app);
+    
+
+
+export { app, auth, firestore } 
 
 
