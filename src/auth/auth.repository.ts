@@ -1,12 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { CollectionReference } from "firebase-admin/firestore";
+import { CollectionReference, getFirestore } from "firebase-admin/firestore";
+import { app } from "index";
 import { User } from "src/auth/models/user.model";
-import { firestore } from "src/main";
 
 @Injectable()
 export class AuthRepository {
     constructor(@Inject(User.collectionName)
     private userCollection: CollectionReference<User>) { }
+
+    firestore = getFirestore(app);
 
     async createUser(user: User) {
         const docRef = this.userCollection.doc();
@@ -15,7 +17,7 @@ export class AuthRepository {
     }
 
     async getUser(email: string): Promise<User> {
-        const querySnapshot = await firestore.collection(User.collectionName).where("email", "==", email).get();
+        const querySnapshot = await this.firestore.collection(User.collectionName).where("email", "==", email).get();
         if (querySnapshot.docs.length > 0) {
             return querySnapshot.docs[0].data() as User;
         } else throw Error(`User not found with email ${email}`);
